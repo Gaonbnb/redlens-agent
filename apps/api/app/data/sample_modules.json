@@ -1,0 +1,35 @@
+[
+  {
+    "id": "runtime-init",
+    "name": "runtime/device_init",
+    "summary": "负责设备初始化、runtime 启动和资源准备。",
+    "keywords": ["runtime", "init", "device", "loader", "初始化", "加载"],
+    "key_files": [
+      "runtime/device_init/init_manager.cpp",
+      "runtime/device_init/device_loader.cpp",
+      "runtime/device_init/runtime_bootstrap.cpp"
+    ]
+  },
+  {
+    "id": "framework-adapter",
+    "name": "framework/pytorch_adapter",
+    "summary": "负责 PyTorch 适配、算子注册和 framework 入口对接。",
+    "keywords": ["torch", "pytorch", "adapter", "framework", "operator", "适配"],
+    "key_files": [
+      "framework/pytorch_adapter/torch_bridge.cpp",
+      "framework/pytorch_adapter/op_registry.cpp",
+      "framework/pytorch_adapter/session_adapter.cpp"
+    ]
+  },
+  {
+    "id": "perf-runtime",
+    "name": "runtime/performance",
+    "summary": "负责性能统计、调度和资源利用分析。",
+    "keywords": ["performance", "latency", "bandwidth", "scheduler", "性能", "吞吐"],
+    "key_files": [
+      "runtime/performance/perf_collector.cpp",
+      "runtime/performance/bandwidth_probe.cpp",
+      "runtime/performance/scheduler_profiler.cpp"
+    ]
+  }
+]

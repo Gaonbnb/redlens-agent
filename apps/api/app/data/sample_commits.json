@@ -1,0 +1,17 @@
+[
+  {
+    "hash": "a1b2c3d",
+    "message": "fix runtime init path when device loader retries after failure",
+    "keywords": ["runtime", "init", "device", "loader"]
+  },
+  {
+    "hash": "b2c3d4e",
+    "message": "align pytorch adapter operator registration with new runtime hooks",
+    "keywords": ["torch", "adapter", "operator", "runtime"]
+  },
+  {
+    "hash": "c3d4e5f",
+    "message": "optimize runtime scheduler bandwidth sampling",
+    "keywords": ["performance", "bandwidth", "scheduler"]
+  }
+]

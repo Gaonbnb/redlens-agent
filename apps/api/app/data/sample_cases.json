@@ -1,0 +1,14 @@
+[
+  {
+    "id": "case-001",
+    "title": "客户现场设备初始化失败",
+    "module": "runtime/device_init",
+    "summary": "问题由 runtime 与 device loader 的版本匹配异常引起。"
+  },
+  {
+    "id": "case-002",
+    "title": "PyTorch 适配层算子加载失败",
+    "module": "framework/pytorch_adapter",
+    "summary": "问题由 operator registry 与 framework session adapter 不一致引起。"
+  }
+]

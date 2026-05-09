@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>DCU Agent Demo</title>
+  <style>
+    :root {
+      --bg: #f6f4ef;
+      --card: #fffdf8;
+      --line: #d7cfbf;
+      --ink: #1d2a35;
+      --accent: #8b5e34;
+      --soft: #f0e8d8;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: "Segoe UI", "PingFang SC", sans-serif;
+      background: linear-gradient(135deg, #f6f4ef, #ede6d6);
+      color: var(--ink);
+    }
+    .wrap {
+      max-width: 1200px;
+      margin: 24px auto;
+      padding: 0 16px 24px;
+    }
+    .title {
+      font-size: 28px;
+      font-weight: 700;
+      margin-bottom: 8px;
+    }
+    .sub {
+      color: #5c6670;
+      margin-bottom: 20px;
+    }
+    .grid {
+      display: grid;
+      grid-template-columns: 1fr 1.2fr;
+      gap: 16px;
+    }
+    .card {
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      padding: 18px;
+      box-shadow: 0 10px 30px rgba(29, 42, 53, 0.08);
+    }
+    label {
+      display: block;
+      margin: 12px 0 6px;
+      font-size: 14px;
+      font-weight: 600;
+    }
+    input, textarea {
+      width: 100%;
+      padding: 10px 12px;
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      background: #fff;
+      font-size: 14px;
+    }
+    textarea { min-height: 140px; resize: vertical; }
+    button {
+      margin-top: 16px;
+      background: var(--accent);
+      color: white;
+      border: 0;
+      padding: 10px 16px;
+      border-radius: 10px;
+      cursor: pointer;
+      font-weight: 700;
+    }
+    .section {
+      margin-bottom: 16px;
+    }
+    .section h3 {
+      margin: 0 0 8px;
+      font-size: 15px;
+    }
+    .pill {
+      display: inline-block;
+      padding: 4px 10px;
+      border-radius: 999px;
+      background: var(--soft);
+      margin: 4px 8px 0 0;
+      font-size: 13px;
+    }
+    .item {
+      padding: 10px 12px;
+      margin-bottom: 8px;
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      background: #fff;
+    }
+    .muted { color: #65717c; font-size: 13px; }
+    pre {
+      background: #faf6ee;
+      border-radius: 12px;
+      padding: 12px;
+      overflow: auto;
+      white-space: pre-wrap;
+      border: 1px solid var(--line);
+    }
+    @media (max-width: 900px) {
+      .grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="title">DCU 诊断 Agent Demo</div>
+    <div class="sub">最小可扩展版本：问题描述 -> 模块召回 -> 文件/提交 -> 排查建议</div>
+    <div class="grid">
+      <div class="card">
+        <label>问题标题</label>
+        <input id="title" value="设备初始化失败" />
+        <label>问题描述</label>
+        <textarea id="description">客户在 PyTorch 场景下运行时出现设备初始化失败，当前日志较少，怀疑与 runtime 初始化链路或 device loader 相关。</textarea>
+        <label>软件版本</label>
+        <input id="version" value="v1.2.3" />
+        <label>框架</label>
+        <input id="framework" value="PyTorch" />
+        <label>芯片型号</label>
+        <input id="chip" value="DCU-X" />
+        <button onclick="runDiagnosis()">开始诊断</button>
+      </div>
+      <div class="card" id="result">
+        <div class="muted">点击“开始诊断”查看结果。</div>
+      </div>
+    </div>
+  </div>
+  <script>
+    async function runDiagnosis() {
+      const payload = {
+        title: document.getElementById("title").value,
+        description: document.getElementById("description").value,
+        version: document.getElementById("version").value,
+        framework: document.getElementById("framework").value,
+        chip: document.getElementById("chip").value
+      };
+      const res = await fetch("/api/v1/diagnose", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload)
+      });
+      const data = await res.json();
+      const html = `
+        <div class="section">
+          <h3>问题理解</h3>
+          <div class="item">
+            <div><strong>领域：</strong>${data.problem_understanding.domain}</div>
+            <div><strong>症状：</strong>${data.problem_understanding.symptoms.join(" / ") || "-"}</div>
+            <div><strong>缺失信息：</strong>${data.problem_understanding.missing_info.join(" / ") || "-"}</div>
+          </div>
+        </div>
+        <div class="section">
+          <h3>候选模块</h3>
+          ${data.candidate_modules.map(item => `
+            <div class="item">
+              <div><strong>${item.name}</strong> (score: ${item.score})</div>
+              <div class="muted">${item.reason}</div>
+            </div>
+          `).join("")}
+        </div>
+        <div class="section">
+          <h3>相关文件</h3>
+          ${data.related_files.map(item => `<span class="pill">${item}</span>`).join("")}
+        </div>
+        <div class="section">
+          <h3>相关提交</h3>
+          ${data.related_commits.map(item => `
+            <div class="item">
+              <div><strong>${item.hash}</strong></div>
+              <div class="muted">${item.message}</div>
+            </div>
+          `).join("")}
+        </div>
+        <div class="section">
+          <h3>排查建议</h3>
+          ${data.suggestions.map(item => `<div class="item">${item}</div>`).join("")}
+        </div>
+        <div class="section">
+          <h3>调试视图</h3>
+          <pre>${JSON.stringify(data.debug_context, null, 2)}</pre>
+        </div>
+      `;
+      document.getElementById("result").innerHTML = html;
+    }
+  </script>
+</body>
+</html>
