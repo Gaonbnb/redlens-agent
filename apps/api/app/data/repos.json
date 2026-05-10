@@ -1,15 +1,28 @@
 [
   {
-    "name": "demo-runtime", 
-    "path": "demo_repos/demo-runtime", 
-    "repo_type": "runtime", 
-    "default_branch": "main", 
+    "name": "demo-runtime",
+    "path": "/root/data/",
+    "repo_type": "runtime",
+    "default_branch": "main",
     "modules": [
       {
         "id": "runtime-init",
         "name": "runtime/device_init",
         "paths": ["runtime/device_init"],
         "tags": ["runtime", "init", "device", "loader", "hipInit"],
+        "typical_questions": [
+          "device init failed",
+          "runtime startup failure",
+          "loader cannot find device"
+        ],
+        "key_entry_files": [
+          "runtime/device_init/device_loader.cpp",
+          "runtime/device_init/runtime_bootstrap.cpp",
+          "runtime/device_init/device_loader.h"
+        ],
+        "versions": ["main"],
+        "chips": ["dcu", "5g"],
+        "frameworks": ["runtime"],
         "description": "Handles device discovery, loader startup, and runtime initialization."
       },
       {
@@ -17,6 +30,17 @@
         "name": "framework/pytorch_adapter",
         "paths": ["framework/pytorch_adapter"],
         "tags": ["pytorch", "torch", "operator", "adapter"],
+        "typical_questions": [
+          "PyTorch operator loader error",
+          "framework call cannot reach runtime",
+          "adapter registration failure"
+        ],
+        "key_entry_files": [
+          "framework/pytorch_adapter/torch_bridge.cpp"
+        ],
+        "versions": ["main"],
+        "chips": ["dcu", "5g"],
+        "frameworks": ["pytorch"],
         "description": "Connects PyTorch frontend calls to runtime and operator registration."
       }
     ]
