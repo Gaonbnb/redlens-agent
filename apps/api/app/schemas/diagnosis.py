@@ -22,6 +22,15 @@ class CandidateModule(BaseModel):
     score: float
     reason: str
 
+class CodeMatch(BaseModel):
+    repo: str
+    file_path: str
+    line: int
+    text: str
+    hit_terms: list[str]
+    context: list[str]
+
+
 # 相关提交（hash、message）
 class RelatedCommit(BaseModel):
     hash: str
@@ -33,6 +42,7 @@ class DiagnosisResponse(BaseModel):
     problem_understanding: ProblemUnderstanding
     candidate_modules: list[CandidateModule]
     related_files: list[str]
+    code_matches: list[CodeMatch] = Field(default_factory=list)
     related_commits: list[RelatedCommit]
     suggestions: list[str]
     debug_context: dict

@@ -5,131 +5,49 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>DCU Agent Demo</title>
   <style>
-    :root {
-      --bg: #f6f4ef;
-      --card: #fffdf8;
-      --line: #d7cfbf;
-      --ink: #1d2a35;
-      --accent: #8b5e34;
-      --soft: #f0e8d8;
-    }
     * { box-sizing: border-box; }
-    body {
-      margin: 0;
-      font-family: "Segoe UI", "PingFang SC", sans-serif;
-      background: linear-gradient(135deg, #f6f4ef, #ede6d6);
-      color: var(--ink);
-    }
-    .wrap {
-      max-width: 1200px;
-      margin: 24px auto;
-      padding: 0 16px 24px;
-    }
-    .title {
-      font-size: 28px;
-      font-weight: 700;
-      margin-bottom: 8px;
-    }
-    .sub {
-      color: #5c6670;
-      margin-bottom: 20px;
-    }
-    .grid {
-      display: grid;
-      grid-template-columns: 1fr 1.2fr;
-      gap: 16px;
-    }
-    .card {
-      background: var(--card);
-      border: 1px solid var(--line);
-      border-radius: 18px;
-      padding: 18px;
-      box-shadow: 0 10px 30px rgba(29, 42, 53, 0.08);
-    }
-    label {
-      display: block;
-      margin: 12px 0 6px;
-      font-size: 14px;
-      font-weight: 600;
-    }
-    input, textarea {
-      width: 100%;
-      padding: 10px 12px;
-      border: 1px solid var(--line);
-      border-radius: 10px;
-      background: #fff;
-      font-size: 14px;
-    }
+    body { margin: 0; font-family: "Segoe UI", "PingFang SC", sans-serif; background: #f7f8fa; color: #1f2937; }
+    main { max-width: 1180px; margin: 24px auto; padding: 0 16px 32px; }
+    h1 { font-size: 26px; margin: 0 0 6px; }
+    .sub { color: #64748b; margin-bottom: 18px; }
+    .grid { display: grid; grid-template-columns: 420px 1fr; gap: 16px; align-items: start; }
+    .panel { background: #fff; border: 1px solid #d9e0e8; border-radius: 8px; padding: 16px; }
+    label { display: block; margin: 12px 0 6px; font-weight: 600; font-size: 14px; }
+    input, textarea { width: 100%; border: 1px solid #cbd5e1; border-radius: 6px; padding: 9px 10px; font-size: 14px; }
     textarea { min-height: 140px; resize: vertical; }
-    button {
-      margin-top: 16px;
-      background: var(--accent);
-      color: white;
-      border: 0;
-      padding: 10px 16px;
-      border-radius: 10px;
-      cursor: pointer;
-      font-weight: 700;
-    }
-    .section {
-      margin-bottom: 16px;
-    }
-    .section h3 {
-      margin: 0 0 8px;
-      font-size: 15px;
-    }
-    .pill {
-      display: inline-block;
-      padding: 4px 10px;
-      border-radius: 999px;
-      background: var(--soft);
-      margin: 4px 8px 0 0;
-      font-size: 13px;
-    }
-    .item {
-      padding: 10px 12px;
-      margin-bottom: 8px;
-      border: 1px solid var(--line);
-      border-radius: 12px;
-      background: #fff;
-    }
-    .muted { color: #65717c; font-size: 13px; }
-    pre {
-      background: #faf6ee;
-      border-radius: 12px;
-      padding: 12px;
-      overflow: auto;
-      white-space: pre-wrap;
-      border: 1px solid var(--line);
-    }
-    @media (max-width: 900px) {
-      .grid { grid-template-columns: 1fr; }
-    }
+    button { margin-top: 14px; border: 0; border-radius: 6px; background: #2563eb; color: #fff; padding: 9px 14px; font-weight: 700; cursor: pointer; }
+    section { margin-bottom: 16px; }
+    h2 { font-size: 15px; margin: 0 0 8px; }
+    .item { border: 1px solid #e2e8f0; border-radius: 6px; padding: 10px; margin-bottom: 8px; background: #fbfdff; }
+    .muted { color: #64748b; font-size: 13px; }
+    .mono { font-family: Consolas, "SFMono-Regular", monospace; font-size: 13px; }
+    pre { margin: 8px 0 0; white-space: pre-wrap; background: #0f172a; color: #e5e7eb; padding: 10px; border-radius: 6px; overflow: auto; }
+    @media (max-width: 900px) { .grid { grid-template-columns: 1fr; } }
   </style>
 </head>
 <body>
-  <div class="wrap">
-    <div class="title">DCU 诊断 Agent Demo</div>
-    <div class="sub">最小可扩展版本：问题描述 -> 模块召回 -> 文件/提交 -> 排查建议</div>
+  <main>
+    <h1>DCU 诊断 Agent Demo</h1>
+    <div class="sub">模拟 repo 索引 + 代码搜索 + 提交/模块召回 + 证据化诊断输出</div>
     <div class="grid">
-      <div class="card">
+      <div class="panel">
         <label>问题标题</label>
-        <input id="title" value="设备初始化失败" />
+        <input id="title" value="PyTorch 启动时报 device init failed" />
         <label>问题描述</label>
-        <textarea id="description">客户在 PyTorch 场景下运行时出现设备初始化失败，当前日志较少，怀疑与 runtime 初始化链路或 device loader 相关。</textarea>
+        <textarea id="description">客户在 PyTorch 场景启动训练时失败，日志里出现 device init failed，怀疑 runtime 初始化链路或 device loader 版本匹配问题。</textarea>
         <label>软件版本</label>
-        <input id="version" value="v1.2.3" />
+        <input id="version" value="runtime 2.3 / driver 1.8" />
         <label>框架</label>
         <input id="framework" value="PyTorch" />
         <label>芯片型号</label>
         <input id="chip" value="DCU-X" />
         <button onclick="runDiagnosis()">开始诊断</button>
       </div>
-      <div class="card" id="result">
+      <div class="panel" id="result">
         <div class="muted">点击“开始诊断”查看结果。</div>
       </div>
     </div>
-  </div>
+  </main>
   <script>
     async function runDiagnosis() {
       const payload = {
@@ -145,47 +63,41 @@
         body: JSON.stringify(payload)
       });
       const data = await res.json();
-      const html = `
-        <div class="section">
-          <h3>问题理解</h3>
+      document.getElementById("result").innerHTML = `
+        <section>
+          <h2>问题理解</h2>
           <div class="item">
-            <div><strong>领域：</strong>${data.problem_understanding.domain}</div>
-            <div><strong>症状：</strong>${data.problem_understanding.symptoms.join(" / ") || "-"}</div>
-            <div><strong>缺失信息：</strong>${data.problem_understanding.missing_info.join(" / ") || "-"}</div>
+            <div>领域：${data.problem_understanding.domain}</div>
+            <div>关键词：${data.problem_understanding.keywords.join(", ")}</div>
+            <div>缺失信息：${data.problem_understanding.missing_info.join(", ") || "-"}</div>
           </div>
-        </div>
-        <div class="section">
-          <h3>候选模块</h3>
-          ${data.candidate_modules.map(item => `
+        </section>
+        <section>
+          <h2>候选模块</h2>
+          ${data.candidate_modules.map(item => `<div class="item"><strong>${item.name}</strong> (${item.score})<div class="muted">${item.reason}</div></div>`).join("")}
+        </section>
+        <section>
+          <h2>代码证据</h2>
+          ${data.code_matches.map(item => `
             <div class="item">
-              <div><strong>${item.name}</strong> (score: ${item.score})</div>
-              <div class="muted">${item.reason}</div>
+              <div class="mono">${item.repo}:${item.file_path}:${item.line}</div>
+              <div>${escapeHtml(item.text)}</div>
+              <pre>${escapeHtml(item.context.join(""))}</pre>
             </div>
-          `).join("")}
-        </div>
-        <div class="section">
-          <h3>相关文件</h3>
-          ${data.related_files.map(item => `<span class="pill">${item}</span>`).join("")}
-        </div>
-        <div class="section">
-          <h3>相关提交</h3>
-          ${data.related_commits.map(item => `
-            <div class="item">
-              <div><strong>${item.hash}</strong></div>
-              <div class="muted">${item.message}</div>
-            </div>
-          `).join("")}
-        </div>
-        <div class="section">
-          <h3>排查建议</h3>
+          `).join("") || `<div class="muted">没有匹配代码证据</div>`}
+        </section>
+        <section>
+          <h2>相关提交</h2>
+          ${data.related_commits.map(item => `<div class="item"><strong>${item.hash}</strong><div>${item.message}</div></div>`).join("")}
+        </section>
+        <section>
+          <h2>排查建议</h2>
           ${data.suggestions.map(item => `<div class="item">${item}</div>`).join("")}
-        </div>
-        <div class="section">
-          <h3>调试视图</h3>
-          <pre>${JSON.stringify(data.debug_context, null, 2)}</pre>
-        </div>
+        </section>
       `;
-      document.getElementById("result").innerHTML = html;
+    }
+    function escapeHtml(text) {
+      return String(text).replace(/[&<>"']/g, s => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[s]));
     }
   </script>
 </body>

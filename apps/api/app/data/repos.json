@@ -1,0 +1,24 @@
+[
+  {
+    "name": "demo-runtime", 
+    "path": "demo_repos/demo-runtime", 
+    "repo_type": "runtime", 
+    "default_branch": "main", 
+    "modules": [
+      {
+        "id": "runtime-init",
+        "name": "runtime/device_init",
+        "paths": ["runtime/device_init"],
+        "tags": ["runtime", "init", "device", "loader", "hipInit"],
+        "description": "Handles device discovery, loader startup, and runtime initialization."
+      },
+      {
+        "id": "framework-adapter",
+        "name": "framework/pytorch_adapter",
+        "paths": ["framework/pytorch_adapter"],
+        "tags": ["pytorch", "torch", "operator", "adapter"],
+        "description": "Connects PyTorch frontend calls to runtime and operator registration."
+      }
+    ]
+  }
+]

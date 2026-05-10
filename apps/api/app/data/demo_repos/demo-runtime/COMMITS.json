@@ -1,0 +1,14 @@
+[
+  {
+    "hash": "9f3a1c2",
+    "message": "fix device init failed when driver runtime versions mismatch",
+    "files": ["runtime/device_init/device_loader.cpp"],
+    "keywords": ["device", "init", "failed", "driver", "runtime"]
+  },
+  {
+    "hash": "7b2d8aa",
+    "message": "wire pytorch session startup to hipInit runtime bootstrap",
+    "files": ["framework/pytorch_adapter/torch_bridge.cpp", "runtime/device_init/runtime_bootstrap.cpp"],
+    "keywords": ["pytorch", "hipInit", "runtime", "bootstrap"]
+  }
+]
